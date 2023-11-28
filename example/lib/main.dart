@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hi_dialog/hi_dialog.dart';
 
@@ -66,15 +68,33 @@ class _MyHomePageState extends State<MyHomePage> {
                           title: "Ok Cancel Dialog")
                       .then((result) {
                     if (result == OkCancelResult.ok) {
-                      hiShowOkAlertDialog(context: context, title: "Ok pressed");
-                      print("Paoooooooo");
+                      hiShowOkAlertDialog(
+                          context: context, title: "Ok pressed");
                       return;
                     }
                     hiShowOkAlertDialog(
                         context: context, title: "Cancel pressed");
                   });
                 },
-                child: const Text("OkCancel dialog")),
+                child: const Text("Ok Cancel dialog")),
+            ElevatedButton(
+                onPressed: () {
+                  final hpd =
+                      HiProgressDialog(context: context, title: "Progress");
+                  int progress = 0;
+
+                  hpd.show(
+                    closeAtCompleted: true,
+                    hideValue: false,
+                    max: 100,
+                  );
+                  Timer.periodic(const Duration(milliseconds: 25), (timer) {
+                    progress++;
+                    hpd.update(value: progress);
+                    if (progress >= 100) timer.cancel();
+                  });
+                },
+                child: const Text("Progress dialog")),
           ],
         ),
       ),

@@ -3,6 +3,8 @@ library hi_dialog;
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
+export 'hi_progress_dialog.dart';
+
 enum OkCancelResult { ok, cancel }
 
 /// Show OK/Cancel alert dialog, customized buttons and text
