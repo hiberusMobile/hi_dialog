@@ -1,7 +1,7 @@
 name: hi_dialog
 description: A new Flutter package project.
-version: 0.0.1
-homepage:
+version: 0.0.2
+homepage: "hiberus.com"
 
 environment:
   sdk: '>=3.1.5 <4.0.0'
