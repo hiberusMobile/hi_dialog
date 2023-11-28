@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-                onPressed: () => hiShowAlertDialog(
+                onPressed: () => hiShowOkAlertDialog(
                     context: context,
                     body: [
                       "Testing alert dialog line1",
@@ -66,10 +66,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           title: "Ok Cancel Dialog")
                       .then((result) {
                     if (result == OkCancelResult.ok) {
-                      hiShowAlertDialog(context: context, title: "Ok pressed");
+                      hiShowOkAlertDialog(context: context, title: "Ok pressed");
+                      print("Paoooooooo");
                       return;
                     }
-                    hiShowAlertDialog(
+                    hiShowOkAlertDialog(
                         context: context, title: "Cancel pressed");
                   });
                 },
