@@ -46,15 +46,16 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-                onPressed: () => hiShowOkAlertDialog(
-                    context: context,
-                    body: [
-                      "Testing alert dialog line1",
-                      "Testing alert dialgo line2"
-                    ],
-                    okLabel: "Ok",
-                    title: "Alert Dialog"),
-                child: const Text("Alert dialog")),
+              onPressed: () => hiShowOkAlertDialog(
+                  context: context,
+                  body: [
+                    "Testing alert dialog line1",
+                    "Testing alert dialgo line2"
+                  ],
+                  okLabel: "Ok",
+                  title: "Alert Dialog"),
+              child: const Text("Alert dialog"),
+            ),
             ElevatedButton(
                 onPressed: () {
                   hiShowOkCancelAlertDialog(
@@ -78,20 +79,30 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: const Text("Ok Cancel dialog")),
             ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   final hpd =
                       HiProgressDialog(context: context, title: "Progress");
                   int progress = 0;
-
+                  await hiShowOkAlertDialog(
+                      context: context,
+                      body: [
+                        "Testing alert dialog line1",
+                        "Testing alert dialgo line2"
+                      ],
+                      okLabel: "Ok",
+                      title: "Alert Dialog");
                   hpd.show(
-                    closeAtCompleted: true,
+                    closeAtCompleted: false,
                     hideValue: false,
                     max: 100,
                   );
                   Timer.periodic(const Duration(milliseconds: 25), (timer) {
                     progress++;
                     hpd.update(value: progress);
-                    if (progress >= 100) timer.cancel();
+                    if (progress >= 100) {
+                      timer.cancel();
+                      hpd.close(delay: 1000);
+                    }
                   });
                 },
                 child: const Text("Progress dialog")),

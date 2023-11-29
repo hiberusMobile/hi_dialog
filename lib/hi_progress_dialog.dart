@@ -9,6 +9,8 @@ class HiProgressDialog {
   bool _dialogIsOpen = false;
   ValueChanged<DialogStatus>? _onStatusChanged;
 
+  BuildContext? _localContext;
+
   HiProgressDialog({required this.context, required String title}) {
     _messageNotifier = ValueNotifier(title);
   }
@@ -35,7 +37,7 @@ class HiProgressDialog {
 
   void _closeDialog() {
     if (_dialogIsOpen) {
-      Navigator.pop(context);
+      if (_localContext != null) Navigator.pop(_localContext!);
       _dialogIsOpen = false;
       _setDialogStatus(DialogStatus.closed);
     }
@@ -59,52 +61,57 @@ class HiProgressDialog {
       barrierDismissible: false,
       barrierColor: Colors.transparent,
       context: context,
-      builder: (context) => PopScope(
-        canPop: false,
-        child: AlertDialog(
-          title: ValueListenableBuilder(
-            valueListenable: _messageNotifier,
-            builder: (BuildContext context, dynamic value, Widget? child) =>
-                Text(value),
-          ),
-          content: ValueListenableBuilder(
-            valueListenable: _progressNotifier,
-            builder: (BuildContext context, dynamic value, Widget? child) {
-              if (value >= max) {
-                _setDialogStatus(DialogStatus.completed);
-                if (closeAtCompleted) close(delay: 1000);
-              }
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: LinearProgressIndicator(
-                          value: _progressNotifier.value / max,
-                        ),
-                      )
-                    ],
-                  ),
-                  hideValue == false
-                      ? Align(
-                          alignment: Alignment.bottomRight,
-                          child: Text(
-                            value <= 0 ? '' : '${_progressNotifier.value}/$max',
-                            style: TextStyle(
-                              decoration: value == max
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
-                            ),
+      builder: (localContext) {
+        _localContext = localContext;
+        return PopScope(
+          canPop: false,
+          child: AlertDialog(
+            title: ValueListenableBuilder(
+              valueListenable: _messageNotifier,
+              builder: (BuildContext context, dynamic value, Widget? child) =>
+                  Text(value),
+            ),
+            content: ValueListenableBuilder(
+              valueListenable: _progressNotifier,
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                if (value >= max) {
+                  _setDialogStatus(DialogStatus.completed);
+                  if (closeAtCompleted) close(delay: 1000);
+                }
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: LinearProgressIndicator(
+                            value: _progressNotifier.value / max,
                           ),
                         )
-                      : const SizedBox.shrink()
-                ],
-              );
-            },
+                      ],
+                    ),
+                    hideValue == false
+                        ? Align(
+                            alignment: Alignment.bottomRight,
+                            child: Text(
+                              value <= 0
+                                  ? ''
+                                  : '${_progressNotifier.value}/$max',
+                              style: TextStyle(
+                                decoration: value == max
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink()
+                  ],
+                );
+              },
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
