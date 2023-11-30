@@ -5,6 +5,8 @@ enum DialogStatus { opened, closed, completed }
 class HiProgressDialog {
   final ValueNotifier _progressNotifier = ValueNotifier(0);
   late ValueNotifier _messageNotifier;
+  late ValueNotifier _titleNotifier;
+
   final BuildContext context;
   bool _dialogIsOpen = false;
   ValueChanged<DialogStatus>? _onStatusChanged;
@@ -12,12 +14,14 @@ class HiProgressDialog {
   BuildContext? _localContext;
 
   HiProgressDialog({required this.context, required String title}) {
-    _messageNotifier = ValueNotifier(title);
+    _messageNotifier = ValueNotifier("");
+    _titleNotifier = ValueNotifier(title);
   }
 
-  void update({int? value, String? msg}) {
+  void update({int? value, String? msg, String? title}) {
     if (value != null) _progressNotifier.value = value;
     if (msg != null) _messageNotifier.value = msg;
+    if (title != null) _titleNotifier.value = title;
   }
 
   void close({int? delay = 0}) {
@@ -52,6 +56,8 @@ class HiProgressDialog {
     bool closeAtCompleted = true,
     bool hideValue = true,
     String? closeLabel,
+    String? message,
+    TextStyle? messageStyle,
     ButtonStyle? closeStyle,
     ValueChanged<DialogStatus>? onStatusChanged,
   }) {
@@ -69,7 +75,7 @@ class HiProgressDialog {
           canPop: false,
           child: AlertDialog(
             title: ValueListenableBuilder(
-              valueListenable: _messageNotifier,
+              valueListenable: _titleNotifier,
               builder: (BuildContext context, dynamic value, Widget? child) =>
                   Text(value),
             ),
@@ -85,6 +91,16 @@ class HiProgressDialog {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    if (message != null)
+                      ValueListenableBuilder(
+                        valueListenable: _messageNotifier,
+                        builder: (BuildContext context, dynamic value,
+                                Widget? child) =>
+                            Text(value, style: messageStyle),
+                      ),
+                    const SizedBox(
+                      height: 12,
+                    ),
                     Row(
                       children: [
                         Expanded(
@@ -101,6 +117,7 @@ class HiProgressDialog {
                           visible: closeLabel != null && value >= max,
                           maintainSize: true,
                           maintainAnimation: true,
+                          maintainState: true,
                           child: Align(
                             alignment: Alignment.bottomLeft,
                             child: TextButton(

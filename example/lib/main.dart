@@ -86,14 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   final hpd =
                       HiProgressDialog(context: context, title: "Progress");
                   int progress = 0;
-                  await hiShowOkAlertDialog(
-                      context: context,
-                      body: [
-                        "Testing alert dialog line1",
-                        "Testing alert dialgo line2"
-                      ],
-                      okLabel: "Ok",
-                      title: "Alert Dialog");
                   hpd.show(
                     closeAtCompleted: true,
                     hideValue: false,
@@ -130,6 +122,31 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
                 child: const Text("Progress dialog with close button")),
+            //Progress autodismiss dialog with changin message or title
+            ElevatedButton(
+                onPressed: () async {
+                  final hpd =
+                      HiProgressDialog(context: context, title: "Progress");
+                  int progress = 0;
+                  hpd.show(
+                      closeAtCompleted: true,
+                      hideValue: false,
+                      max: 100,
+                      message: "Updating...");
+                  Timer.periodic(const Duration(milliseconds: 25), (timer) {
+                    progress++;
+                    hpd.update(
+                        value: progress,
+                        msg: "Progress $progress",
+                        title: "Title $progress");
+                    if (progress >= 100) {
+                      timer.cancel();
+                      //hpd.close(delay: 1000);
+                    }
+                  });
+                },
+                child: const Text(
+                    "Progress dialog with updating title and message")),
           ],
         ),
       ),
