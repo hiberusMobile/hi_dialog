@@ -45,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            //*** Ok only Dialog */
             ElevatedButton(
               onPressed: () => hiShowOkAlertDialog(
                   context: context,
@@ -56,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   title: "Alert Dialog"),
               child: const Text("Alert dialog"),
             ),
+            //Ok/Cancel Dialog
             ElevatedButton(
                 onPressed: () {
                   hiShowOkCancelAlertDialog(
@@ -78,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
                 child: const Text("Ok Cancel dialog")),
+            //Progress autodismiss dialog
             ElevatedButton(
                 onPressed: () async {
                   final hpd =
@@ -92,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       okLabel: "Ok",
                       title: "Alert Dialog");
                   hpd.show(
-                    closeAtCompleted: false,
+                    closeAtCompleted: true,
                     hideValue: false,
                     max: 100,
                   );
@@ -101,11 +104,32 @@ class _MyHomePageState extends State<MyHomePage> {
                     hpd.update(value: progress);
                     if (progress >= 100) {
                       timer.cancel();
-                      hpd.close(delay: 1000);
+                      //hpd.close(delay: 1000);
                     }
                   });
                 },
                 child: const Text("Progress dialog")),
+            //Progress with close button
+            ElevatedButton(
+                onPressed: () async {
+                  final hpd =
+                      HiProgressDialog(context: context, title: "Progress");
+                  int progress = 0;
+                  hpd.show(
+                      closeAtCompleted: false,
+                      hideValue: false,
+                      max: 100,
+                      closeLabel: "Dismiss!");
+                  Timer.periodic(const Duration(milliseconds: 25), (timer) {
+                    progress++;
+                    hpd.update(value: progress);
+                    if (progress >= 100) {
+                      timer.cancel();
+                      //hpd.close(delay: 1000);
+                    }
+                  });
+                },
+                child: const Text("Progress dialog with close button")),
           ],
         ),
       ),

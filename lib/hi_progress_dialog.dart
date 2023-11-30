@@ -51,6 +51,8 @@ class HiProgressDialog {
     int max = 100,
     bool closeAtCompleted = true,
     bool hideValue = true,
+    String? closeLabel,
+    ButtonStyle? closeStyle,
     ValueChanged<DialogStatus>? onStatusChanged,
   }) {
     _onStatusChanged = onStatusChanged;
@@ -76,7 +78,9 @@ class HiProgressDialog {
               builder: (BuildContext context, dynamic value, Widget? child) {
                 if (value >= max) {
                   _setDialogStatus(DialogStatus.completed);
-                  if (closeAtCompleted) close(delay: 1000);
+                  if (closeAtCompleted) {
+                    close(delay: 1000);
+                  }
                 }
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -90,21 +94,42 @@ class HiProgressDialog {
                         )
                       ],
                     ),
-                    hideValue == false
-                        ? Align(
-                            alignment: Alignment.bottomRight,
-                            child: Text(
-                              value <= 0
-                                  ? ''
-                                  : '${_progressNotifier.value}/$max',
-                              style: TextStyle(
-                                decoration: value == max
-                                    ? TextDecoration.lineThrough
-                                    : TextDecoration.none,
-                              ),
-                            ),
-                          )
-                        : const SizedBox.shrink()
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Visibility(
+                          visible: closeLabel != null && value >= max,
+                          maintainSize: true,
+                          maintainAnimation: true,
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: TextButton(
+                                style: closeStyle,
+                                onPressed: () {
+                                  if (_localContext != null) {
+                                    Navigator.of(_localContext!).pop();
+                                  }
+                                },
+                                child: Text(closeLabel ?? "")),
+                          ),
+                        ),
+                        hideValue == false
+                            ? Align(
+                                alignment: Alignment.bottomRight,
+                                child: Text(
+                                  value <= 0
+                                      ? ''
+                                      : '${_progressNotifier.value}/$max',
+                                  style: TextStyle(
+                                    decoration: value == max
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ],
+                    ),
                   ],
                 );
               },
