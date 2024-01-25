@@ -2,18 +2,24 @@ import 'package:flutter/material.dart';
 
 enum DialogStatus { opened, closed, completed }
 
+enum ProgressDialogType { finite, infinite }
+
 class HiProgressDialog {
   final ValueNotifier _progressNotifier = ValueNotifier(0);
   late ValueNotifier _messageNotifier;
   late ValueNotifier _titleNotifier;
 
   final BuildContext context;
+  final ProgressDialogType type;
   bool _dialogIsOpen = false;
   ValueChanged<DialogStatus>? _onStatusChanged;
 
   BuildContext? _localContext;
 
-  HiProgressDialog({required this.context, required String title}) {
+  HiProgressDialog(
+      {required this.context,
+      required String title,
+      this.type = ProgressDialogType.finite}) {
     _messageNotifier = ValueNotifier("");
     _titleNotifier = ValueNotifier(title);
   }
@@ -105,7 +111,9 @@ class HiProgressDialog {
                       children: [
                         Expanded(
                           child: LinearProgressIndicator(
-                            value: _progressNotifier.value / max,
+                            value: type == ProgressDialogType.finite
+                                ? _progressNotifier.value / max
+                                : null,
                           ),
                         )
                       ],

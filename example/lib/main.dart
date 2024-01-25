@@ -124,29 +124,47 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: const Text("Progress dialog with close button")),
             //Progress autodismiss dialog with changin message or title
             ElevatedButton(
-                onPressed: () async {
-                  final hpd =
-                      HiProgressDialog(context: context, title: "Progress");
-                  int progress = 0;
-                  hpd.show(
-                      closeAtCompleted: true,
-                      hideValue: false,
-                      max: 100,
-                      message: "Updating...");
-                  Timer.periodic(const Duration(milliseconds: 25), (timer) {
-                    progress++;
-                    hpd.update(
-                        value: progress,
-                        msg: "Progress $progress",
-                        title: "Title $progress");
-                    if (progress >= 100) {
-                      timer.cancel();
-                      //hpd.close(delay: 1000);
-                    }
-                  });
-                },
-                child: const Text(
-                    "Progress dialog with updating title and message")),
+              onPressed: () async {
+                final hpd =
+                    HiProgressDialog(context: context, title: "Progress");
+                int progress = 0;
+                hpd.show(
+                    closeAtCompleted: true,
+                    hideValue: false,
+                    max: 100,
+                    message: "Updating...");
+                Timer.periodic(const Duration(milliseconds: 25), (timer) {
+                  progress++;
+                  hpd.update(
+                      value: progress,
+                      msg: "Progress $progress",
+                      title: "Title $progress");
+                  if (progress >= 100) {
+                    timer.cancel();
+                    //hpd.close(delay: 1000);
+                  }
+                });
+              },
+              child:
+                  const Text("Progress dialog with updating title and message"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final hpd = HiProgressDialog(
+                    context: context,
+                    title: "Progress",
+                    type: ProgressDialogType.infinite);
+                hpd.show(
+                  message: "Updating...",
+                );
+                Timer(
+                  const Duration(seconds: 10),
+                  () => hpd.close(),
+                );
+              },
+              child: const Text(
+                  "Progress dialog with infinite progress (10 seconds test)"),
+            ),
           ],
         ),
       ),

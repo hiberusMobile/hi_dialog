@@ -32,11 +32,15 @@ Future<OkCancelResult> hiShowOkCancelAlertDialog({
       body:
           List.generate(ubody.length, (i) => Text(ubody[i], style: bodyStyle)),
       actionLabels: [
-        (Text(okLabel ?? '', style: okStyle), okButtonStyle, OkCancelResult.ok),
         (
-          Text(cancelLabel ?? '', style: cancelStyle),
-          cancelButtonStyle,
-          OkCancelResult.cancel
+          label: Text(okLabel ?? '', style: okStyle),
+          style: okButtonStyle,
+          result: OkCancelResult.ok
+        ),
+        (
+          label: Text(cancelLabel ?? '', style: cancelStyle),
+          style: cancelButtonStyle,
+          result: OkCancelResult.cancel
         )
       ]);
   return result ?? OkCancelResult.cancel;
@@ -60,15 +64,19 @@ Future<void> hiShowOkAlertDialog({
           List.generate(ubody.length, (i) => Text(ubody[i], style: bodyStyle)),
       actionLabels: [
         (
-          Text(okLabel ?? 'Ok', style: okStyle),
-          okButtonStyle,
-          OkCancelResult.ok
+          label: Text(okLabel ?? 'Ok', style: okStyle),
+          style: okButtonStyle,
+          result: OkCancelResult.ok
         )
       ]);
   return;
 }
 
-typedef ActionTuple = (Widget label, ButtonStyle? style, OkCancelResult);
+typedef ActionTuple = ({
+  Widget label,
+  ButtonStyle? style,
+  OkCancelResult result
+});
 
 Future<OkCancelResult?> _showGenericDialog({
   required BuildContext context,
@@ -90,11 +98,11 @@ Future<OkCancelResult?> _showGenericDialog({
         actions: <Widget>[
           for (int i = 0; i < actionLabels.length; i++)
             TextButton(
-              style: actionLabels[i].$2,
+              style: actionLabels[i].style,
               onPressed: () {
-                Navigator.of(context).pop(actionLabels[i].$3);
+                Navigator.of(context).pop(actionLabels[i].result);
               },
-              child: actionLabels[i].$1,
+              child: actionLabels[i].label,
             ),
         ],
       );
